@@ -62,26 +62,102 @@ do
 done
 if [[ $comb -eq 1 ]]
 then
-	x=`awk 'BEGIN{printf("%0.2f", '${dict[h]}' / '$n' * '100' )}'`
-	y=`awk 'BEGIN{printf("%0.2f", '${dict[t]}' / '$n' * '100' )}'`
-	echo "Head = $x%"
-	echo "Tail = $y%"
+	x=`awk 'BEGIN{printf("%0.0f", '${dict[h]}' / '$n' * '100' )}'`
+	y=`awk 'BEGIN{printf("%0.0f", '${dict[t]}' / '$n' * '100' )}'`
+	echo -e "Head = $x%\nTail = $y%"
+	if [[ $x -gt $y ]]
+	then
+		echo "Head=$x% is greater"
+	elif [[ $x -eq $y ]]
+	then
+		echo "Both are equal"
+	else
+		echo "Tail=$y% is greater"
+	fi
 elif [[ $comb -eq 2 ]]
 then
-	w=`awk 'BEGIN{printf("%0.2f", '${dict[hh]}' / '$n' * '100' )}'`
-        x=`awk 'BEGIN{printf("%0.2f", '${dict[tt]}' / '$n' * '100' )}'`
-	y=`awk 'BEGIN{printf("%0.2f", '${dict[ht]}' / '$n' * '100' )}'`
-        z=`awk 'BEGIN{printf("%0.2f", '${dict[th]}' / '$n' * '100' )}'`
+	w=`awk 'BEGIN{printf("%0.0f", '${dict[hh]}' / '$n' * '100' )}'`
+        x=`awk 'BEGIN{printf("%0.0f", '${dict[tt]}' / '$n' * '100' )}'`
+	y=`awk 'BEGIN{printf("%0.0f", '${dict[ht]}' / '$n' * '100' )}'`
+        z=`awk 'BEGIN{printf("%0.0f", '${dict[th]}' / '$n' * '100' )}'`
 	echo -e "HH=$w%\nTT=$x%\nHT=$y%\nTH=$z%"
+	arr1=( $w $x $y $z )
+	size=${#arr1[@]}
+	for (( i=0; i<$size; i++ ))
+	do
+		for (( j=$(( $i + 1 )); j<=$size; j++ ))
+		do
+			if [[ ${arr1[$i]} -gt ${arr1[$j]} ]]
+			then
+				continue
+			else
+				temp=${arr1[$i]}
+				arr1[$i]=${arr1[$j]}
+				arr1[$j]=$temp
+			fi
+		done
+	done
+	case ${arr1[0]} in
+		"$w") echo "HH:${arr1[0]} is the highest" ;;
+	esac
+	case ${arr1[0]} in
+		"$x") echo "TT:${arr1[0]} is the highest" ;;
+	esac
+	case ${arr1[0]} in
+		"$y") echo "HT:${arr1[0]} is the highest" ;;
+	esac
+	case ${arr1[0]} in
+		"$z") echo "TH:${arr1[0]} is the highest" ;;
+	esac
 else
-        w=`awk 'BEGIN{printf("%0.2f", '${dict[hhh]}' / '$n' * '100' )}'`
-        x=`awk 'BEGIN{printf("%0.2f", '${dict[ttt]}' / '$n' * '100' )}'`
-        y=`awk 'BEGIN{printf("%0.2f", '${dict[htt]}' / '$n' * '100' )}'`
-        z=`awk 'BEGIN{printf("%0.2f", '${dict[thh]}' / '$n' * '100' )}'`
-        w1=`awk 'BEGIN{printf("%0.2f", '${dict[hth]}' / '$n' * '100' )}'`
-        x1=`awk 'BEGIN{printf("%0.2f", '${dict[tht]}' / '$n' * '100' )}'`
-        y1=`awk 'BEGIN{printf("%0.2f", '${dict[hht]}' / '$n' * '100' )}'`
-        z1=`awk 'BEGIN{printf("%0.2f", '${dict[tth]}' / '$n' * '100' )}'`
+        w=`awk 'BEGIN{printf("%0.0f", '${dict[hhh]}' / '$n' * '100' )}'`
+        x=`awk 'BEGIN{printf("%0.0f", '${dict[ttt]}' / '$n' * '100' )}'`
+        y=`awk 'BEGIN{printf("%0.0f", '${dict[htt]}' / '$n' * '100' )}'`
+        z=`awk 'BEGIN{printf("%0.0f", '${dict[thh]}' / '$n' * '100' )}'`
+        w1=`awk 'BEGIN{printf("%0.0f", '${dict[hth]}' / '$n' * '100' )}'`
+        x1=`awk 'BEGIN{printf("%0.0f", '${dict[tht]}' / '$n' * '100' )}'`
+        y1=`awk 'BEGIN{printf("%0.0f", '${dict[hht]}' / '$n' * '100' )}'`
+        z1=`awk 'BEGIN{printf("%0.0f", '${dict[tth]}' / '$n' * '100' )}'`
 	echo -e "HHH=$w%\nTTT=$x%\nHTT=$y%\nTHH=$z%\nHTH=$w1%\nTHT=$x1%\nHHT=$y1%\nTTH=$z1%"
+        arr1=( $w $x $y $z $w1 $x1 $y1 $z1 )
+        size=${#arr1[@]}
+        for (( i=0; i<$size; i++ ))
+        do
+                for (( j=$(( $i + 1 )); j<=$size; j++ ))
+                do
+                        if [[ ${arr1[$i]} -gt ${arr1[$j]} ]]
+                        then
+                                continue
+                        else
+                                temp=${arr1[$i]}
+                                arr1[$i]=${arr1[$j]}
+                                arr1[$j]=$temp
+                        fi
+                done
+        done
+        case ${arr1[0]} in
+                "$w") echo "HHH:${arr1[0]} is the highest" ;;
+	esac
+	case ${arr1[0]} in
+                "$x") echo "TTT:${arr1[0]} is the highest" ;;
+	esac
+	case ${arr1[0]} in
+                "$y") echo "HTT:${arr1[0]} is the highest" ;;
+	esac
+	case ${arr1[0]} in
+                "$z") echo "THH:${arr1[0]} is the highest" ;;
+	esac
+	case ${arr1[0]} in
+		"$w1") echo "HTH:${arr1[0]} is the highest" ;;
+	esac
+	case ${arr1[0]} in
+                "$x1") echo "THT:${arr1[0]} is the highest" ;;
+	esac
+	case ${arr1[0]} in
+                "$y1") echo "HHT:${arr1[0]} is the highest" ;;
+	esac
+	case ${arr1[0]} in
+                "$z1") echo "TTH:${arr1[0]} is the highest" ;;
+        esac
 
 fi
